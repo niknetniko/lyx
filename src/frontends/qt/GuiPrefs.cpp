@@ -1544,6 +1544,12 @@ PrefSpellchecker::PrefSpellchecker(GuiPreferences * form)
 #else
 #undef CONNECT_APPLESPELL
 #endif
+#if defined(USE_WINDOWS_PACKAGING)
+    spellcheckerCB->addItem(qt_("Native"), QString("native"));
+#define CONNECT_WINSPELL
+#else
+#undef CONNECT_WINSPELL
+#endif
 #if defined(USE_ASPELL)
 	spellcheckerCB->addItem(qt_("Aspell"), QString("aspell"));
 #endif
@@ -1554,7 +1560,7 @@ PrefSpellchecker::PrefSpellchecker(GuiPreferences * form)
 	spellcheckerCB->addItem(qt_("Hunspell"), QString("hunspell"));
 #endif
 
-	#if defined(CONNECT_APPLESPELL) || defined(USE_ASPELL) || defined(USE_ENCHANT) || defined(USE_HUNSPELL)
+	#if defined(CONNECT_APPLESPELL) || defined(CONNECT_WINSPELL) || defined(USE_ASPELL) || defined(USE_ENCHANT) || defined(USE_HUNSPELL)
 		connect(spellcheckerCB, SIGNAL(currentIndexChanged(int)),
 			this, SIGNAL(changed()));
 		connect(altLanguageED, SIGNAL(textChanged(QString)),

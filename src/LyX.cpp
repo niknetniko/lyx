@@ -46,6 +46,7 @@
 #include "Server.h"
 #include "ServerSocket.h"
 #include "Session.h"
+#include "WindowsSpellChecker.h"
 #include "WordList.h"
 
 #include "frontends/alert.h"
@@ -155,7 +156,7 @@ void showFileError(string const & error)
 /// The main application class private implementation.
 struct LyX::Impl {
 	Impl()
-		: latexfonts_(0), spell_checker_(0), apple_spell_checker_(0), aspell_checker_(0), enchant_checker_(0), hunspell_checker_(0)
+		: latexfonts_(0), spell_checker_(0), apple_spell_checker_(0), aspell_checker_(0), enchant_checker_(0), hunspell_checker_(0), windows_spell_checker_(nullptr)
 	{}
 
 	~Impl()
@@ -165,6 +166,7 @@ struct LyX::Impl {
 		delete aspell_checker_;
 		delete enchant_checker_;
 		delete hunspell_checker_;
+		delete windows_spell_checker_;
 	}
 
 	///
@@ -220,6 +222,8 @@ struct LyX::Impl {
 	SpellChecker * enchant_checker_;
 	///
 	SpellChecker * hunspell_checker_;
+	///
+	SpellChecker * windows_spell_checker_;
 };
 
 
@@ -1620,6 +1624,10 @@ void setSpellChecker()
 		if (!singleton_->pimpl_->apple_spell_checker_)
 			singleton_->pimpl_->apple_spell_checker_ = new AppleSpellChecker;
 		singleton_->pimpl_->spell_checker_ = singleton_->pimpl_->apple_spell_checker_;
+#elif defined(USE_WINDOWS_PACKAGING)
+        if (!singleton_->pimpl_->windows_spell_checker_)
+            singleton_->pimpl_->windows_spell_checker_ = new WindowsSpellChecker;
+        singleton_->pimpl_->spell_checker_ = singleton_->pimpl_->windows_spell_checker_;
 #else
 		singleton_->pimpl_->spell_checker_ = 0;
 #endif

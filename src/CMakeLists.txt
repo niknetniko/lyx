@@ -47,6 +47,11 @@ if(NOT APPLE)
 	list(REMOVE_ITEM lyx_headers ${TOP_SRC_DIR}/src/AppleSpellChecker.h)
 endif()
 
+if(NOT WIN32)
+    list(REMOVE_ITEM lyx_sources ${TOP_SRC_DIR}/src/WindowsSpellChecker.cpp)
+    list(REMOVE_ITEM lyx_headers ${TOP_SRC_DIR}/src/WindowsSpellChecker.h)
+endif()
+
 if(NOT ASPELL_FOUND)
 	list(REMOVE_ITEM lyx_sources ${TOP_SRC_DIR}/src/AspellChecker.cpp)
 	list(REMOVE_ITEM lyx_headers ${TOP_SRC_DIR}/src/AspellChecker.h)

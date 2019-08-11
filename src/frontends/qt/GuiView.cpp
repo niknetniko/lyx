@@ -118,6 +118,10 @@
 #include <QToolBar>
 #include <QUrl>
 
+#if defined(USE_WINDOWS_PACKAGING)
+#include <QtWinExtras>
+#endif
+
 
 
 // sync with GuiAlert.cpp
@@ -1056,6 +1060,16 @@ void GuiView::showEvent(QShowEvent * e)
 		// No work area, switch to the background widget.
 		d.setBackground();
 
+#if defined(Q_OS_WIN)
+	// On Windows we want to show the busy status on the Taskbar.
+	auto *button = new QWinTaskbarButton(this);
+	button->setWindow(this->windowHandle());
+
+	QWinTaskbarProgress *progress = button->progress();
+	progress->setRange(0, 0);
+	connect(&d.processing_thread_watcher_, SIGNAL(started()), progress, SLOT(show()));
+	connect(&d.processing_thread_watcher_, SIGNAL(finished()), progress, SLOT(hide()));
+#endif
 	updateToolbars();
 	QMainWindow::showEvent(e);
 }
